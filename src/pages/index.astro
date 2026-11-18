@@ -4,6 +4,8 @@ import NowList from '../components/NowList.astro';
 import { PROFILE, PROJECTS, SOCIALS } from '../consts';
 import Base from '../layouts/Base.astro';
 
+// Words that cycle in the contact heading; the first is shown before JS runs
+const contactWords = ['good', 'cool', 'fun'];
 ---
 
 <Base>
@@ -63,8 +65,19 @@ import Base from '../layouts/Base.astro';
 		<section id="contact" class="section contact">
 			<div class="container">
 				<span class="mono muted" data-reveal>Contact</span>
-				<h2 class="contact-title" data-reveal style="--delay:80ms">
-					Let’s make something <span class="serif">good</span> together.
+				<h2
+					class="contact-title"
+					data-reveal
+					style="--delay:80ms"
+					aria-label={`Let’s make something ${contactWords[0]} together.`}
+				>
+					Let’s make something <span class="rotator serif" aria-hidden="true"
+						>{
+							contactWords.map((word, i) => (
+								<span class:list={['word', { 'is-active': i === 0 }]}>{word}</span>
+							))
+						}</span
+					> together.
 				</h2>
 				<a href={`mailto:${PROFILE.email}`} class="email" data-reveal style="--delay:160ms">
 					<span>{PROFILE.email}</span>
@@ -245,6 +258,42 @@ import Base from '../layouts/Base.astro';
 		letter-spacing: -0.05em;
 		max-width: 14ch;
 	}
+	.rotator {
+		position: relative;
+		display: inline-grid;
+		vertical-align: bottom;
+		/* Clip vertically so words slide in and out, but let italic overhangs show */
+		padding-block: 0.12em;
+		margin-block: -0.12em;
+		clip-path: inset(0 -0.4em);
+		transition: width 0.6s var(--ease);
+	}
+	.word {
+		grid-area: 1 / 1;
+		justify-self: start;
+		white-space: nowrap;
+		padding-right: 0.06em;
+		color: var(--accent);
+		opacity: 0;
+		transform: translateY(100%);
+		transition:
+			transform 0.7s var(--ease),
+			opacity 0.5s var(--ease);
+	}
+	.word.is-active {
+		opacity: 1;
+		transform: none;
+	}
+	.word.is-leaving {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.rotator,
+		.word {
+			transition: none;
+		}
+	}
 	.email {
 		display: inline-flex;
 		align-items: center;
@@ -285,3 +334,31 @@ import Base from '../layouts/Base.astro';
 		color: var(--fg);
 	}
 </style>
+
+<script>
+	const rotator = document.querySelector<HTMLElement>('.rotator');
+	const words = rotator ? [...rotator.querySelectorAll<HTMLElement>('.word')] : [];
+
+	if (rotator && words.length > 1) {
+		let index = 0;
+		// Size the slot to the visible word so the sentence closes up around it
+		const fit = () => (rotator.style.width = `${words[index].offsetWidth}px`);
+		fit();
+		document.fonts.ready.then(fit);
+		addEventListener('resize', fit);
+
+		setInterval(() => {
+			if (document.hidden) return;
+			const prev = words[index];
+			index = (index + 1) % words.length;
+			const next = words[index];
+
+			prev.classList.remove('is-active');
+			prev.classList.add('is-leaving');
+			// Park the old word below again once it has slid out, ready for its next turn
+			setTimeout(() => prev.classList.remove('is-leaving'), 700);
+			next.classList.add('is-active');
+			fit();
+		}, 2600);
+	}
+</script>
