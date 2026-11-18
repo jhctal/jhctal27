@@ -1,63 +1,64 @@
-# Astro Starter Kit: Blog
+# jhctal.com
+
+Personal site and portfolio of Latchlern Jack, built with [Astro](https://astro.build).
+
+Live at [www.jhctal.com](https://www.jhctal.com).
+
+## Getting started
+
+Requires Node 22.23+ and pnpm.
 
 ```sh
-pnpm create astro@latest -- --template blog
+pnpm install
+pnpm dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+The dev server runs at `localhost:4321`.
 
-Features:
+## Commands
 
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and Open Graph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
+| Command        | Action                                                       |
+| :------------- | :----------------------------------------------------------- |
+| `pnpm dev`     | Start the dev server                                         |
+| `pnpm build`   | Build the site to `dist/`                                    |
+| `pnpm preview` | Preview the production build locally                         |
+| `pnpm og`      | Regenerate the social preview card (`src/assets/og.png`)     |
+| `pnpm icons`   | Regenerate the favicon and app icons from `latch_logo.svg`   |
 
-## 🚀 Project Structure
+## Editing content
 
-Inside of your Astro project, you'll see the following folders and files:
+Most content lives in [`src/consts.ts`](src/consts.ts):
+
+- `PROFILE`: name, role, tagline, location, time zone, status and email
+- `PROJECTS`: the "Selected work" list on the homepage
+- `NOW`: the "Now" list on the homepage and About page
+- `SOCIALS`: links in the contact section and footer
+
+The About page text is in [`src/pages/about.astro`](src/pages/about.astro).
+
+After changing your name, role, tagline or location, run `pnpm og` so the social preview card matches. After changing `public/latch_logo.svg`, run `pnpm icons`.
+
+## Structure
 
 ```text
-├── public/
-├── src/
-│   ├── assets/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+public/
+  latch_logo.svg      Logo, used for the favicon and light-mode header (source for `pnpm icons`)
+  latch_logo_light.svg  White variant, used in the header in dark mode
+  favicon.ico, icon-*.png, apple-touch-icon.png, site.webmanifest   Generated icons
+scripts/
+  og.mjs              Social preview card generator
+  icons.mjs           Icon set generator
+src/
+  assets/og.png       Generated social preview card
+  components/         Header, footer, hero, theme toggle, Now list
+  layouts/Base.astro  Page shell shared by every page
+  pages/              index (homepage) and about
+  styles/global.css   Colour tokens for light/dark mode and shared styles
+  consts.ts           Site content
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Notes
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
+- **Theme:** light and dark mode follow the system setting until the visitor uses the toggle. The choice is saved in `localStorage`.
+- **Hero:** the interactive dot field and the name's weight change are in `src/components/Hero.astro`. Both respect `prefers-reduced-motion`.
+- **Fonts:** Geist, Geist Mono and Instrument Serif load through Astro's font API (see `astro.config.mjs`).

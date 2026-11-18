@@ -7,7 +7,8 @@ import ThemeToggle from './ThemeToggle.astro';
 <header class="site-header">
 	<nav class="container">
 		<a href="/" class="brand" aria-label="Home">
-			<img class="mark" src="/latch_logo.svg" width="28" height="28" alt="" />
+			<img class="mark mark-dark" src="/latch_logo_light.svg" width="28" height="28" alt="" />
+			<img class="mark mark-light" src="/latch_logo.svg" width="28" height="28" alt="" />
 			<span>{PROFILE.fullName}</span>
 		</a>
 		<div class="links">
@@ -51,6 +52,14 @@ import ThemeToggle from './ThemeToggle.astro';
 	}
 	.brand:hover .mark {
 		transform: rotate(-6deg) scale(1.06);
+	}
+	/* Follow the site theme (which can differ from the OS setting) */
+	.mark-light,
+	:global([data-theme='light']) .mark-dark {
+		display: none;
+	}
+	:global([data-theme='light']) .mark-light {
+		display: block;
 	}
 	.links {
 		display: flex;
