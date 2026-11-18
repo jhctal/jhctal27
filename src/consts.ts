@@ -20,6 +20,7 @@ export const SOCIALS = [
   { label: "GitHub", href: "https://github.com/jhctal" },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/jhctal/" },
   { label: "Bluesky", href: "https://bsky.app/profile/jhctal.bsky.social" },
+  { label: "CodeWars", href: "https://www.codewars.com/users/jhctal" },
   //   { label: "Read.cv", href: "https://read.cv/" },
 ];
 
