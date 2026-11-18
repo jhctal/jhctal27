@@ -1,15 +1,16 @@
 ---
-import { NOW, PROFILE, PROJECTS, SITE_TITLE } from '../consts';
+import NowList from '../components/NowList.astro';
+import { PROFILE, PROJECTS } from '../consts';
 import Base from '../layouts/Base.astro';
 
 const project = (title: string) => PROJECTS.find((p) => p.title === title)?.href;
 ---
 
-<Base title={`About — ${SITE_TITLE}`}>
+<Base title={`About — ${PROFILE.fullName}`}>
 	<main class="container page">
 		<header class="page-head">
 			<span class="mono muted">About</span>
-			<h1>Hi, I’m {PROFILE.name}. <span class="serif">{PROFILE.role.toLowerCase()}.</span></h1>
+			<h1>Hi, I’m {PROFILE.name}. <span class="serif">{PROFILE.role}.</span></h1>
 		</header>
 
 		<div class="grid">
@@ -55,8 +56,8 @@ const project = (title: string) => PROJECTS.find((p) => p.title === title)?.href
 					If you’re working on something interesting, I’d love to hear about
 					it — <a href={`mailto:${PROFILE.email}`}>get in touch</a>.
 				</p>
-				<h2>Now</h2>
-				<ul>{NOW.map((item) => <li>{item}</li>)}</ul>
+				<h2 class="now-heading">Now</h2>
+				<NowList />
 			</div>
 		</div>
 	</main>
@@ -106,6 +107,9 @@ const project = (title: string) => PROJECTS.find((p) => p.title === title)?.href
 	.prose {
 		font-size: 1.15rem;
 		max-width: 60ch;
+	}
+	.now-heading {
+		margin-bottom: 1.5rem;
 	}
 	@media (max-width: 720px) {
 		.grid {

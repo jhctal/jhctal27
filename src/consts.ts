@@ -1,18 +1,20 @@
 // Site-wide content.
 
-export const SITE_TITLE = "Latch Jack — Portfolio";
 export const SITE_DESCRIPTION =
-  "Engineer & designer who likes knowing how things work beneath the abstractions.";
+  "Software engineer & designer who likes knowing how things work beneath the abstractions.";
 
 export const PROFILE = {
   name: "Latch",
-  role: "Engineer & Designer",
+  fullName: "Latchlern Jack",
+  role: "Software Engineer & Designer",
   tagline: "who likes knowing how things work beneath the abstractions.",
   location: "London, UK",
   timeZone: "Europe/London",
   status: "Building",
   email: "latch.jack@gmail.com",
 };
+
+export const SITE_TITLE = `${PROFILE.fullName} — Software Engineer`;
 
 export const SOCIALS = [
   { label: "GitHub", href: "https://github.com/jhctal" },
@@ -49,8 +51,9 @@ export const PROJECTS = [
 ];
 
 export const NOW = [
-  "Building front-end for B2B SaaS applications",
-  "Exploring generative interfaces & motion",
-  "Building personal tools",
-  "Learning about System Design",
+  { label: "Work", text: "Front-end for B2B SaaS products" },
+  { label: "Building", text: "Tally, to learn Postgres the hard way" },
+  { label: "Learning", text: "System design and networking" },
+  { label: "Watching", text: "My Hero Academia" },
+  { label: "Reading", text: "Absolute Batman" },
 ];

@@ -1,0 +1,40 @@
+---
+import { NOW } from '../consts';
+---
+
+<dl class="now-list">
+	{
+		NOW.map(({ label, text }) => (
+			<div class="row">
+				<dt class="mono">{label}</dt>
+				<dd>{text}</dd>
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.now-list {
+		margin: 0;
+	}
+	.row {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		gap: 1rem;
+		align-items: baseline;
+		padding: 0.5rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+	.row:first-child {
+		padding-top: 0;
+	}
+	.row:last-child {
+		border-bottom: 0;
+	}
+	dt {
+		color: var(--muted);
+	}
+	dd {
+		margin: 0;
+	}
+</style>

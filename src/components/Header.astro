@@ -7,8 +7,8 @@ import ThemeToggle from './ThemeToggle.astro';
 <header class="site-header">
 	<nav class="container">
 		<a href="/" class="brand" aria-label="Home">
-			<span class="mark" aria-hidden="true"></span>
-			<span>{PROFILE.name}</span>
+			<img class="mark" src="/latch_logo.svg" width="28" height="28" alt="" />
+			<span>{PROFILE.fullName}</span>
 		</a>
 		<div class="links">
 			<HeaderLink href="/#work">Work</HeaderLink>
@@ -46,32 +46,17 @@ import ThemeToggle from './ThemeToggle.astro';
 		letter-spacing: -0.01em;
 	}
 	.mark {
-		width: 10px;
-		height: 10px;
-		border-radius: 50%;
-		background: var(--accent);
-		box-shadow: 0 0 0 0 var(--accent);
-		animation: pulse 2.8s var(--ease) infinite;
+		display: block;
+		transition: transform 0.5s var(--ease);
 	}
-	@keyframes pulse {
-		0% {
-			box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 50%, transparent);
-		}
-		70%,
-		100% {
-			box-shadow: 0 0 0 10px transparent;
-		}
+	.brand:hover .mark {
+		transform: rotate(-6deg) scale(1.06);
 	}
 	.links {
 		display: flex;
 		align-items: center;
 		gap: 0.25rem;
 		font-size: 0.9rem;
-	}
-	@media (prefers-reduced-motion: reduce) {
-		.mark {
-			animation: none;
-		}
 	}
 </style>
 
