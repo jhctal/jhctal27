@@ -1,17 +1,12 @@
 // @ts-check
 
-import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, fontProviders } from 'astro/config';
-import { SHOW_WRITING } from './src/consts';
 
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://example.com',
-	integrations: [
-		mdx(),
-		sitemap({ filter: (page) => SHOW_WRITING || !new URL(page).pathname.startsWith('/blog') }),
-	],
+	integrations: [sitemap()],
 	fonts: [
 		{
 			provider: fontProviders.google(),

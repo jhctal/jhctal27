@@ -54,6 +54,3 @@ export const NOW = [
   "Building personal tools",
   "Learning about System Design",
 ];
-
-// Flip to true to bring back the Writing nav link, homepage section, /blog pages and RSS feed
-export const SHOW_WRITING = false;

@@ -1,15 +1,8 @@
 ---
-import { getCollection } from 'astro:content';
-import FormattedDate from '../components/FormattedDate.astro';
 import Hero from '../components/Hero.astro';
-import { NOW, PROFILE, PROJECTS, SHOW_WRITING, SOCIALS } from '../consts';
+import { NOW, PROFILE, PROJECTS, SOCIALS } from '../consts';
 import Base from '../layouts/Base.astro';
 
-const posts = SHOW_WRITING
-	? (await getCollection('blog'))
-			.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-			.slice(0, 3)
-	: [];
 ---
 
 <Base>
@@ -52,9 +45,11 @@ const posts = SHOW_WRITING
 				</div>
 				<div class="about-body">
 					<p class="lede" data-reveal>
-						I design and build digital products with a bias for
-						<span class="serif">clarity, craft</span> and the small details that make software feel
-						alive. I'm based in {PROFILE.location}.
+						I'm a software engineer based in {PROFILE.location}.
+					</p>
+					<p class="lede" data-reveal style="--delay:60ms">
+						I build fast, clear interfaces for B2B SaaS by day, and spend the rest of my
+						time <span class="serif">taking apart</span> the systems behind them.
 					</p>
 					<div class="now" data-reveal style="--delay:120ms">
 						<span class="mono muted">Now</span>
@@ -63,33 +58,6 @@ const posts = SHOW_WRITING
 				</div>
 			</div>
 		</section>
-
-		{
-			posts.length > 0 && (
-				<section class="section">
-					<div class="container">
-						<div class="section-head" data-reveal>
-							<h2>Writing</h2>
-							<a href="/blog" class="mono link">
-								All posts →
-							</a>
-						</div>
-						<ul class="posts">
-							{posts.map((post, i) => (
-								<li data-reveal style={`--delay:${i * 60}ms`}>
-									<a href={`/blog/${post.id}/`} class="post-row">
-										<span class="post-title">{post.data.title}</span>
-										<span class="mono muted">
-											<FormattedDate date={post.data.pubDate} />
-										</span>
-									</a>
-								</li>
-							))}
-						</ul>
-					</div>
-				</section>
-			)
-		}
 
 		<section id="contact" class="section contact">
 			<div class="container">
@@ -121,17 +89,9 @@ const posts = SHOW_WRITING
 	h2 {
 		font-size: clamp(1.75rem, 4vw, 2.75rem);
 	}
-	.link {
-		color: var(--muted);
-		transition: color 0.2s;
-	}
-	.link:hover {
-		color: var(--fg);
-	}
 
 	/* Work */
 	.work,
-	.posts,
 	.now ul,
 	.socials {
 		margin: 0;
@@ -256,6 +216,9 @@ const posts = SHOW_WRITING
 		letter-spacing: -0.03em;
 		max-width: 26ch;
 	}
+	.lede + .lede {
+		margin-top: 0.75em;
+	}
 	.lede .serif {
 		color: var(--accent);
 	}
@@ -276,30 +239,6 @@ const posts = SHOW_WRITING
 		.now {
 			grid-template-columns: 1fr;
 		}
-	}
-
-	/* Writing */
-	.posts {
-		border-top: 1px solid var(--line);
-	}
-	.posts li {
-		border-bottom: 1px solid var(--line);
-	}
-	.post-row {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1rem;
-		padding: 1.25rem 0;
-	}
-	.post-title {
-		font-size: 1.15rem;
-		letter-spacing: -0.01em;
-		background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-		transition: background-size 0.5s var(--ease);
-	}
-	.post-row:hover .post-title {
-		background-size: 100% 1px;
 	}
 
 	/* Contact */
