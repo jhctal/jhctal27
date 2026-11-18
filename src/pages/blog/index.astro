@@ -1,112 +1,106 @@
 ---
-import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import Base from '../../layouts/Base.astro';
+import { SHOW_WRITING, SITE_TITLE } from '../../consts';
+
+if (!SHOW_WRITING) return Astro.redirect('/');
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
+<Base title={`Writing — ${SITE_TITLE}`}>
+	<main class="container page">
+		<header class="page-head">
+			<span class="mono muted">Writing</span>
+			<h1>Notes on <span class="serif">craft</span>, tools &amp; process.</h1>
+		</header>
+		<ul class="posts">
+			{
+				posts.map((post, i) => (
+					<li data-reveal style={`--delay:${i * 50}ms`}>
+						<a href={`/blog/${post.id}/`} class="post-row">
+							<span class="mono muted date">
+								<FormattedDate date={post.data.pubDate} />
+							</span>
+							<span class="body">
+								<span class="title">{post.data.title}</span>
+								<span class="desc muted">{post.data.description}</span>
+							</span>
+							<span class="arrow" aria-hidden="true">
+								→
+							</span>
+						</a>
+					</li>
+				))
 			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<section>
-				<ul>
-					{posts.map((post) => (
-						<li>
-							<a href={`/blog/${post.id}/`}>
-								{post.data.heroImage && (
-									<Image width={720} height={360} src={post.data.heroImage} alt="" />
-								)}
-								<h4 class="title">{post.data.title}</h4>
-								<p class="date">
-									<FormattedDate date={post.data.pubDate} />
-								</p>
-							</a>
-						</li>
-					))}
-				</ul>
-			</section>
-		</main>
-		<Footer />
-	</body>
-</html>
+		</ul>
+	</main>
+</Base>
+
+<style>
+	.page {
+		padding-top: calc(64px + clamp(3rem, 8vw, 6rem));
+		padding-bottom: clamp(4rem, 10vw, 8rem);
+	}
+	.page-head {
+		margin-bottom: clamp(3rem, 7vw, 5rem);
+	}
+	h1 {
+		margin-top: 1rem;
+		font-size: clamp(2.5rem, 7vw, 5rem);
+		letter-spacing: -0.05em;
+		max-width: 14ch;
+	}
+	.posts {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--line);
+	}
+	.posts li {
+		border-bottom: 1px solid var(--line);
+	}
+	.post-row {
+		display: grid;
+		grid-template-columns: 9rem 1fr auto;
+		align-items: baseline;
+		gap: 1.5rem;
+		padding: 1.75rem 0;
+	}
+	.body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+	.title {
+		font-size: 1.35rem;
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		transition: color 0.2s;
+	}
+	.desc {
+		font-size: 0.95rem;
+	}
+	.arrow {
+		color: var(--faint);
+		transition:
+			transform 0.5s var(--ease),
+			color 0.2s;
+	}
+	.post-row:hover .arrow {
+		color: var(--accent);
+		transform: translateX(4px);
+	}
+	@media (max-width: 640px) {
+		.post-row {
+			grid-template-columns: 1fr auto;
+			gap: 0.5rem 1rem;
+		}
+		.date {
+			grid-column: 1 / -1;
+		}
+	}
+</style>

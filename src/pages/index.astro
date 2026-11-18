@@ -1,59 +1,352 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { getCollection } from 'astro:content';
+import FormattedDate from '../components/FormattedDate.astro';
+import Hero from '../components/Hero.astro';
+import { NOW, PROFILE, PROJECTS, SHOW_WRITING, SOCIALS } from '../consts';
+import Base from '../layouts/Base.astro';
+
+const posts = SHOW_WRITING
+	? (await getCollection('blog'))
+			.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+			.slice(0, 3)
+	: [];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to
-				build a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your{' '}
-				<code>astro.config.mjs</code> file. You can customize your setup with{' '}
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like
-				Tailwind, React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>
-					Edit this page in <code>src/pages/index.astro</code>
-				</li>
-				<li>
-					Edit the site header items in <code>src/components/Header.astro</code>
-				</li>
-				<li>
-					Add your name to the footer in <code>src/components/Footer.astro</code>
-				</li>
-				<li>
-					Check out the included blog posts in <code>src/content/blog/</code>
-				</li>
-				<li>
-					Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code>
-				</li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to{' '}
-				<a href="https://docs.astro.build/">read the docs</a> or{' '}
-				<a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out{' '}
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a> by{' '}
-				<a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
-</html>
+<Base>
+	<main>
+		<Hero />
+
+		<section id="work" class="section">
+			<div class="container">
+				<div class="section-head" data-reveal>
+					<h2>Selected work</h2>
+					<span class="mono">{String(PROJECTS.length).padStart(2, '0')} projects</span>
+				</div>
+				<ul class="work">
+					{
+						PROJECTS.map((p, i) => (
+							<li data-reveal style={`--delay:${i * 60}ms`}>
+								<a href={p.href} class="work-row" target="_blank" rel="noopener noreferrer">
+									<span class="mono idx">{String(i + 1).padStart(2, '0')}</span>
+									<span class="work-title">{p.title}</span>
+									<span class="work-desc muted">{p.description}</span>
+									<span class="mono work-meta muted">
+										{p.tags.join(' · ')}
+										<span class="year">{p.year}</span>
+									</span>
+									<span class="arrow" aria-hidden="true">
+										↗
+									</span>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+
+		<section class="section">
+			<div class="container about">
+				<div data-reveal>
+					<span class="mono muted">About</span>
+				</div>
+				<div class="about-body">
+					<p class="lede" data-reveal>
+						I design and build digital products with a bias for
+						<span class="serif">clarity, craft</span> and the small details that make software feel
+						alive. I'm based in {PROFILE.location}.
+					</p>
+					<div class="now" data-reveal style="--delay:120ms">
+						<span class="mono muted">Now</span>
+						<ul>{NOW.map((item) => <li>{item}</li>)}</ul>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		{
+			posts.length > 0 && (
+				<section class="section">
+					<div class="container">
+						<div class="section-head" data-reveal>
+							<h2>Writing</h2>
+							<a href="/blog" class="mono link">
+								All posts →
+							</a>
+						</div>
+						<ul class="posts">
+							{posts.map((post, i) => (
+								<li data-reveal style={`--delay:${i * 60}ms`}>
+									<a href={`/blog/${post.id}/`} class="post-row">
+										<span class="post-title">{post.data.title}</span>
+										<span class="mono muted">
+											<FormattedDate date={post.data.pubDate} />
+										</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				</section>
+			)
+		}
+
+		<section id="contact" class="section contact">
+			<div class="container">
+				<span class="mono muted" data-reveal>Contact</span>
+				<h2 class="contact-title" data-reveal style="--delay:80ms">
+					Let’s make something <span class="serif">good</span> together.
+				</h2>
+				<a href={`mailto:${PROFILE.email}`} class="email" data-reveal style="--delay:160ms">
+					<span>{PROFILE.email}</span>
+					<span class="arrow" aria-hidden="true">→</span>
+				</a>
+				<ul class="socials" data-reveal style="--delay:240ms">
+					{
+						SOCIALS.map((s) => (
+							<li>
+								<a href={s.href} target="_blank" rel="noopener noreferrer" class="mono">
+									{s.label}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</div>
+		</section>
+	</main>
+</Base>
+
+<style>
+	h2 {
+		font-size: clamp(1.75rem, 4vw, 2.75rem);
+	}
+	.link {
+		color: var(--muted);
+		transition: color 0.2s;
+	}
+	.link:hover {
+		color: var(--fg);
+	}
+
+	/* Work */
+	.work,
+	.posts,
+	.now ul,
+	.socials {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	/* Columns are defined once on the list and shared by every row via subgrid,
+	   so titles, descriptions and tags line up across projects */
+	.work {
+		display: grid;
+		grid-template-columns: 3rem minmax(0, 1.1fr) minmax(0, 2fr) auto 2rem;
+		column-gap: 1.5rem;
+		border-top: 1px solid var(--line);
+	}
+	.work li {
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+		border-bottom: 1px solid var(--line);
+	}
+	.work-row {
+		position: relative;
+		isolation: isolate;
+		display: grid;
+		grid-column: 1 / -1;
+		grid-template-columns: subgrid;
+		align-items: center;
+		row-gap: 1.5rem;
+		padding: 1.75rem 0;
+		transition: padding 0.5s var(--ease);
+	}
+	.work-row::before {
+		content: '';
+		position: absolute;
+		inset: 0 calc(var(--gutter) * -0.5);
+		z-index: -1;
+		border-radius: 12px;
+		background: var(--line);
+		opacity: 0;
+		transform: scaleY(0.6);
+		transition:
+			opacity 0.35s var(--ease),
+			transform 0.5s var(--ease);
+	}
+	.work-row:hover::before,
+	.work-row:focus-visible::before {
+		opacity: 0.6;
+		transform: none;
+	}
+	.work-row:focus-visible {
+		outline: none;
+	}
+	.idx {
+		color: var(--faint);
+	}
+	.work-title {
+		font-size: clamp(1.4rem, 2.6vw, 2rem);
+		font-weight: 500;
+		letter-spacing: -0.03em;
+		transition: transform 0.5s var(--ease);
+	}
+	.work-row:hover .work-title {
+		transform: translateX(0.4rem);
+	}
+	.work-desc {
+		font-size: 0.95rem;
+		max-width: 44ch;
+	}
+	.work-meta {
+		display: flex;
+		gap: 1.25rem;
+		white-space: nowrap;
+	}
+	.year {
+		color: var(--fg);
+	}
+	.arrow {
+		justify-self: end;
+		font-size: 1.25rem;
+		color: var(--faint);
+		transition:
+			transform 0.5s var(--ease),
+			color 0.2s;
+	}
+	.work-row:hover .arrow {
+		color: var(--accent);
+		transform: translate(3px, -3px);
+	}
+
+	@media (max-width: 900px) {
+		.work {
+			grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+			column-gap: 1rem;
+		}
+		.work-row {
+			row-gap: 0.35rem;
+		}
+		.work-desc {
+			grid-column: 2 / -1;
+			grid-row: 2;
+		}
+		.work-meta {
+			grid-column: 2 / -1;
+			grid-row: 3;
+			margin-top: 0.5rem;
+		}
+		.arrow {
+			grid-column: 3;
+			grid-row: 1;
+		}
+	}
+
+	/* About */
+	.about {
+		display: grid;
+		grid-template-columns: 1fr 3fr;
+		gap: 2rem;
+	}
+	.lede {
+		font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+		line-height: 1.2;
+		letter-spacing: -0.03em;
+		max-width: 26ch;
+	}
+	.lede .serif {
+		color: var(--accent);
+	}
+	.now {
+		display: grid;
+		grid-template-columns: 6rem 1fr;
+		gap: 1rem;
+		margin-top: clamp(2.5rem, 6vw, 4rem);
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line);
+	}
+	.now li {
+		padding: 0.15rem 0;
+		color: var(--muted);
+	}
+	@media (max-width: 720px) {
+		.about,
+		.now {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	/* Writing */
+	.posts {
+		border-top: 1px solid var(--line);
+	}
+	.posts li {
+		border-bottom: 1px solid var(--line);
+	}
+	.post-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1.25rem 0;
+	}
+	.post-title {
+		font-size: 1.15rem;
+		letter-spacing: -0.01em;
+		background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+		transition: background-size 0.5s var(--ease);
+	}
+	.post-row:hover .post-title {
+		background-size: 100% 1px;
+	}
+
+	/* Contact */
+	.contact-title {
+		margin-top: 1.5rem;
+		font-size: clamp(2.5rem, 8vw, 6.5rem);
+		line-height: 0.98;
+		letter-spacing: -0.05em;
+		max-width: 14ch;
+	}
+	.email {
+		display: inline-flex;
+		align-items: center;
+		gap: 1rem;
+		margin-top: clamp(2rem, 5vw, 3.5rem);
+		padding: 1rem 1.5rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		font-size: clamp(1rem, 2vw, 1.25rem);
+		transition:
+			background 0.3s var(--ease),
+			color 0.3s var(--ease),
+			border-color 0.3s;
+	}
+	.email:hover {
+		background: var(--fg);
+		color: var(--bg);
+		border-color: var(--fg);
+	}
+	.email .arrow {
+		color: inherit;
+	}
+	.email:hover .arrow {
+		color: var(--accent);
+		transform: translateX(4px);
+	}
+	.socials {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin-top: 2.5rem;
+	}
+	.socials a {
+		color: var(--muted);
+		transition: color 0.2s;
+	}
+	.socials a:hover {
+		color: var(--fg);
+	}
+</style>
